@@ -105,4 +105,26 @@ public class SuperHeroCrudControllerTest {
     }
 
 
+    @Test
+    public void Given_UnHeroeCreado_When_SeBuscaActualizarElNombre_Then_unHeroeEsActualizado() throws Exception {
+        var hero = superHeroFactory.create();
+
+        var heroFindId = path.concat("/")
+                .concat(String.valueOf(hero.getId()));
+
+        hero.setName(new Faker().superhero().name());
+
+        this.mockMvc.perform(
+                        put(heroFindId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(hero)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(hero.getId())))
+                .andExpect(jsonPath("$.name", equalTo(hero.getName())))
+                .andExpect(jsonPath("$.power", equalTo(hero.getPower())));
+    }
+
+
 }

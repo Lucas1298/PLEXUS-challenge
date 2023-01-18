@@ -6,4 +6,6 @@ public interface SuperHeroCommandService {
 
     SuperHero save(SuperHero superHero);
 
+    SuperHero update(SuperHero hero);
+
 }

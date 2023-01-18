@@ -4,6 +4,7 @@ import com.project.hero.application.exceptions.SuperHeroNotFound;
 import com.project.hero.application.mapper.SuperHeroMapper;
 import com.project.hero.application.usecases.SaveSuperHeroService;
 import com.project.hero.application.usecases.SuperHeroFinderService;
+import com.project.hero.application.usecases.SuperHeroUpdaterService;
 import com.project.hero.infrastructure.rest.request.SuperHeroeRequest;
 import com.project.hero.infrastructure.rest.response.SuperHeroResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,10 @@ public class SuperHeroController {
     @Autowired
     private SuperHeroMapper superHeroMapper;
 
+    @Autowired
+    private SuperHeroUpdaterService superHeroUpdaterService;
+
+
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public SuperHeroResponse createHero(@RequestBody SuperHeroeRequest req){
         var hero = saveSuperHeroService.save(req);
@@ -34,6 +39,14 @@ public class SuperHeroController {
     public SuperHeroResponse findHero(@PathVariable Integer id) throws SuperHeroNotFound {
 
         var hero = superHeroFinderService.findHero(id);
+
+        return superHeroMapper.toResponse(hero);
+    }
+
+    @PutMapping(value = "/{id}",consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public SuperHeroResponse findHero(@RequestBody SuperHeroeRequest req, @PathVariable Integer id) throws SuperHeroNotFound {
+
+        var hero = superHeroUpdaterService.update(req, id);
 
         return superHeroMapper.toResponse(hero);
     }

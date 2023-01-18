@@ -5,6 +5,7 @@ import com.project.hero.domain.entity.SuperHero;
 import com.project.hero.infrastructure.rest.request.SuperHeroeRequest;
 import com.project.hero.infrastructure.rest.response.SuperHeroResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface SuperHeroMapper {
@@ -14,4 +15,7 @@ public interface SuperHeroMapper {
     SuperHeroDTO toDTO(SuperHero superHero);
 
     SuperHeroResponse toResponse(SuperHeroDTO hero);
+
+    SuperHero updateEntity(@MappingTarget SuperHero oldHero, SuperHeroeRequest newHero);
+
 }
