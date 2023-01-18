@@ -1,7 +1,9 @@
 package com.project.hero.controller.it;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.javafaker.Faker;
 import com.project.hero.infrastructure.persistence.repository.SuperHeroRespository;
+import com.project.hero.service.SuperHeroFactory;
 import com.project.hero.service.SuperHeroRequestBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,9 @@ public class SuperHeroCrudControllerTest {
 
     @Autowired
     private SuperHeroRespository superHeroRepo;
+
+    @Autowired
+    private SuperHeroFactory superHeroFactory;
 
     @Autowired
     private WebApplicationContext context;
@@ -68,6 +73,36 @@ public class SuperHeroCrudControllerTest {
         assertFalse(superHeroRepo.findByName(req.getName()).isEmpty());
     }
 
+
+    @Test
+    public void Given_UnHeroeCreado_When_SeBuscaPorId_Then_unHeroeEsEncontrado() throws Exception {
+        var hero = superHeroFactory.create();
+        var heroFindId = path.concat("/")
+                .concat(String.valueOf(hero.getId()));
+
+        this.mockMvc.perform(
+                        get(heroFindId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(hero.getId())))
+                .andExpect(jsonPath("$.name", equalTo(hero.getName())))
+                .andExpect(jsonPath("$.power", equalTo(hero.getPower())));
+    }
+
+    @Test
+    public void Given_NoHeroes_When_SeBuscaPorId_Then_NotFound() throws Exception {
+        var superHeroFindId = path.concat("/")
+                .concat(String.valueOf(new Faker().number().randomNumber()));
+
+        this.mockMvc.perform(
+                        get(superHeroFindId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 
 
 }
