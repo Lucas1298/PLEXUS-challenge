@@ -19,6 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -124,6 +125,23 @@ public class SuperHeroCrudControllerTest {
                 .andExpect(jsonPath("$.id", equalTo(hero.getId())))
                 .andExpect(jsonPath("$.name", equalTo(hero.getName())))
                 .andExpect(jsonPath("$.power", equalTo(hero.getPower())));
+    }
+
+    @Test
+    public void Given_UnHeroeCreado_When_SeEliminaUnHeroe_Then_unHeroeEsEliminado() throws Exception {
+        var hero = superHeroFactory.create();
+
+        var heroFindId = path.concat("/")
+                .concat(String.valueOf(hero.getId()));
+
+        this.mockMvc.perform(
+                        delete(heroFindId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertTrue(superHeroRepo.findById(hero.getId()).isEmpty());
     }
 
 

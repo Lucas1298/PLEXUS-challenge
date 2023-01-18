@@ -8,4 +8,6 @@ public interface SuperHeroCommandService {
 
     SuperHero update(SuperHero hero);
 
+    void delete(Integer id);
+
 }

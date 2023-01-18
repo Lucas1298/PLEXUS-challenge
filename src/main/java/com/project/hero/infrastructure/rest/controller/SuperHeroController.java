@@ -3,11 +3,13 @@ package com.project.hero.infrastructure.rest.controller;
 import com.project.hero.application.exceptions.SuperHeroNotFound;
 import com.project.hero.application.mapper.SuperHeroMapper;
 import com.project.hero.application.usecases.SaveSuperHeroService;
+import com.project.hero.application.usecases.SuperHeroEliminatorService;
 import com.project.hero.application.usecases.SuperHeroFinderService;
 import com.project.hero.application.usecases.SuperHeroUpdaterService;
 import com.project.hero.infrastructure.rest.request.SuperHeroeRequest;
 import com.project.hero.infrastructure.rest.response.SuperHeroResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -27,6 +29,9 @@ public class SuperHeroController {
 
     @Autowired
     private SuperHeroUpdaterService superHeroUpdaterService;
+
+    @Autowired
+    private SuperHeroEliminatorService superHeroEliminatorService;
 
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -50,4 +55,13 @@ public class SuperHeroController {
 
         return superHeroMapper.toResponse(hero);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteHero(@PathVariable Integer id){
+
+        superHeroEliminatorService.delete(id);
+
+    }
+
 }

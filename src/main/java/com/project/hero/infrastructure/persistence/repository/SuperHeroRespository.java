@@ -23,4 +23,8 @@ public interface SuperHeroRespository extends JpaRepository<SuperHero, Integer>,
         return ((CrudRepository<SuperHero, Integer>) this).save(hero);
     }
 
+    default void delete(Integer id) {
+        this.deleteById(id);
+    }
+
 }
